@@ -28,6 +28,9 @@ public static async Task Run(TimerInfo myTimer, TraceWriter log)
     string connStringSql = System.Configuration.ConfigurationManager.ConnectionStrings["connStringSql"].ConnectionString;
     string schema = System.Configuration.ConfigurationManager.ConnectionStrings["schema"].ConnectionString;
     string functionName = System.Configuration.ConfigurationManager.ConnectionStrings["functionName"].ConnectionString;
+    
+    int processHours = Int32.Parse(System.Configuration.ConfigurationManager.ConnectionStrings["processHours"].ConnectionString);
+
 
     Uri asServerUrl = new Uri(asServer);
     string resource = "https://" + asServerUrl.Host;
@@ -65,7 +68,7 @@ public static async Task Run(TimerInfo myTimer, TraceWriter log)
         {
             DateTime lastProcessed = DateTime.Parse(lastDateProcessed);
             DateTime now = DateTime.Now;
-            if(now - lastProcessed < TimeSpan.FromMinutes(15))
+            if(now - lastProcessed < TimeSpan.FromHours(processHours))
             {
                 process = false;
             }
@@ -86,7 +89,7 @@ public static async Task Run(TimerInfo myTimer, TraceWriter log)
         }
         else
         {
-            responseSuccess = "Last processed time was less than 15 miniutes ago";
+            responseSuccess = "Last processed time was less than" + processHours + " hours ago";
         }
     }
     catch (Exception ex)
